@@ -1,0 +1,18 @@
+C:\Users\Administrator\Desktop\Test\WindowsFormsApplication1\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.exe.config
+C:\Users\Administrator\Desktop\Test\WindowsFormsApplication1\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.exe
+C:\Users\Administrator\Desktop\Test\WindowsFormsApplication1\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.pdb
+C:\Users\Administrator\Desktop\Test\WindowsFormsApplication1\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.exe
+C:\Users\Administrator\Desktop\Test\WindowsFormsApplication1\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.pdb
+C:\Users\Administrator\Desktop\Test\WindowsFormsApplication1\WindowsFormsApplication1\obj\Debug\MyCompressor.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\Desktop\Test\WindowsFormsApplication1\WindowsFormsApplication1\obj\Debug\MyCompressor.csproj.GenerateResource.Cache
+C:\Users\Administrator\Desktop\Test\WindowsFormsApplication1\WindowsFormsApplication1\obj\Debug\MyCompressor.Form1.resources
+C:\Users\Administrator\Desktop\Test\WindowsFormsApplication1\WindowsFormsApplication1\obj\Debug\MyCompressor.Properties.Resources.resources
+D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.exe.config
+D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.exe
+D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.pdb
+D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.exe
+D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.pdb
+D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\obj\Debug\MyCompressor.csprojResolveAssemblyReference.cache
+D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\obj\Debug\MyCompressor.Form1.resources
+D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\obj\Debug\MyCompressor.Properties.Resources.resources
+D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\obj\Debug\MyCompressor.csproj.GenerateResource.Cache
