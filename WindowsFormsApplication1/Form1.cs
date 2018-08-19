@@ -25,33 +25,33 @@ namespace MyCompressor
         public Form1()
         {
             InitializeComponent();
-            CheckForIllegalCrossThreadCalls = false;
+            CheckForIllegalCrossThreadCalls = false; 
         }
         private void ComPressor()
         {
             ProcessStartInfo procinfo = new ProcessStartInfo("ffmpeg.exe");
             procinfo.UseShellExecute = false;
             procinfo.CreateNoWindow = true;
-            for (int i = 0; i < listBox1.Items.Count; i++)
+            for (int i = 0; i < listView1.Items.Count; i++)
             {
-                if (File.Exists("E:\\A\\" + System.IO.Path.GetFileName((String)listBox1.Items[i])))//目标文件已存在
+                if (File.Exists("E:\\A\\" + System.IO.Path.GetFileName(listView1.Items[i].SubItems[0].Text)))//目标文件已存在
                 {
                     if (DialogResult.No == MessageBox.Show(null, "文件已经存在于输出文件夹中\n是：覆盖生成，否：跳过此文件", "文件重复", MessageBoxButtons.YesNo))
                     {
-                        listBox2.Items[i] = "Complete";
+                        listView1.Items[i].SubItems[1].Text = "Complete";
                         continue;
                     }
                     else
-                        File.Delete("E:\\A\\" + System.IO.Path.GetFileName((String)listBox1.Items[i]));
+                        File.Delete("E:\\A\\" + System.IO.Path.GetFileName(listView1.Items[i].SubItems[0].Text));
                 }
-                procinfo.Arguments = "-i " + (String)listBox1.Items[i] + " -vcodec h264 -s 480*360 -b:v 384k " + "E:\\A\\" + System.IO.Path.GetFileName((String)listBox1.Items[i]);
+                procinfo.Arguments = "-i " + listView1.Items[i].SubItems[0].Text + " -vcodec h264 -s 480*360 -b:v 384k " + "E:\\A\\" + System.IO.Path.GetFileName(listView1.Items[i].SubItems[0].Text);
                 proc = Process.Start(procinfo);
-                listBox2.Items[i] = "Compressing";
+                listView1.Items[i].SubItems[1].Text = "Compressing";
                 proc.WaitForExit();
                 proc.Close();
-                listBox2.Items[i] = "Complete";
+                listView1.Items[i].SubItems[1].Text = "Complete";
             }
-            listBox1.Enabled = true;
+            listView1.Enabled = true;
             button1.Enabled = true;
             button2.Enabled = false;
             button2.Text = "暂停";
@@ -59,7 +59,7 @@ namespace MyCompressor
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            listBox1.Enabled = false;
+            listView1.Enabled = false;
             button1.Enabled = false;
             button2.Enabled = true;
             button2.Text = "暂停";
@@ -68,38 +68,7 @@ namespace MyCompressor
             th.IsBackground = true;
             th.Start();
         }
-        private void listBox1_DragEnter(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetData(DataFormats.FileDrop) != null)
-            {
-                e.Effect = DragDropEffects.Copy;
-            }
-        }
-        private void listBox1_DragDrop(object sender, DragEventArgs e)
-        {
-            String[] Files = (String[])e.Data.GetData(DataFormats.FileDrop);
-            int i;
-            int count = listBox1.Items.Count + 1;
-            for (i = 0; i < Files.Length; i++)
-            {
-                if (System.IO.Path.GetExtension(Files[i]) == ".mp4")
-                {
-                    listBox1.Items.Add(Files[i]);
-                    listBox2.Items.Add("Ready");
-                    
-                }
-            }
-        }
-        private void listBox1_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            int index = listBox1.SelectedIndex;
-            if (index != -1)
-            {
-                listBox1.Items.RemoveAt(index);
-                listBox2.Items.RemoveAt(index);
-            }
-        }
-        private void listBox2_DrawItem(object sender, DrawItemEventArgs e)
+/*        private void listBox2_DrawItem(object sender, DrawItemEventArgs e)
         {
             Brush setcolor = Brushes.Black;
             if (e.Index >= 0)
@@ -113,22 +82,28 @@ namespace MyCompressor
                     e.Graphics.FillRectangle(Brushes.Green, e.Bounds);
                 e.Graphics.DrawString(txt, e.Font, setcolor, e.Bounds, StringFormat.GenericDefault);
             }
+            ShowScrollBar(listBox2.Handle, 1, 0);
         }
-
+*/
         private void button2_Click(object sender, EventArgs e)
         {
             if (button2.Text.Equals("暂停"))
             {
                 NtSuspendProcess(proc.Handle);
+                for (int i = 0; i < listView1.Items.Count; i++)
+                    if (listView1.Items[i].SubItems[1].Text.Equals("Compressing"))
+                        listView1.Items[i].SubItems[1].Text = "Pause";
                 button2.Text = "继续";
             }
             else
             {
                 NtResumeProcess(proc.Handle);
+                for (int i = 0; i < listView1.Items.Count; i++)
+                    if (listView1.Items[i].SubItems[1].Text.Equals("Pause"))
+                        listView1.Items[i].SubItems[1].Text = "Compressing";
                 button2.Text = "暂停";
             }
         }
-
         private void button3_Click(object sender, EventArgs e)
         {
             th.Abort();
@@ -137,10 +112,34 @@ namespace MyCompressor
             button2.Enabled = false;
             button2.Text = "暂停";
             button3.Enabled = false;
-            listBox1.Enabled = true;
-            for (int i = 0; i < listBox2.Items.Count; i++)
-                if (listBox2.Items[i].ToString().Equals("Compressing"))
-                    listBox2.Items[i] = "Ready";
+            listView1.Enabled = true;
+            for (int i = 0; i < listView1.Items.Count; i++)
+                if (listView1.Items[i].SubItems[1].Text.Equals("Compressing") ||
+                    listView1.Items[i].SubItems[1].Text.Equals("Pause"))
+                    listView1.Items[i].SubItems[1].Text = "Ready";
+        }
+        private void listView1_DragDrop(object sender, DragEventArgs e)
+        {
+            String[] Files = (String[])e.Data.GetData(DataFormats.FileDrop);
+            int count = listView1.Items.Count + 1;
+            for (int i = 0; i < Files.Length; i++)
+            {
+                if (System.IO.Path.GetExtension(Files[i]) == ".mp4")
+                    listView1.Items.Add(new ListViewItem(new string[] { Files[i], "Ready" }));
+            }
+        }
+        private void listView1_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetData(DataFormats.FileDrop) != null)
+            {
+                e.Effect = DragDropEffects.Copy;
+            }
+        }
+        private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            int index = listView1.Items.IndexOf(listView1.FocusedItem);
+            if (index != -1)
+                listView1.Items.RemoveAt(index);
         }
     }
 }
