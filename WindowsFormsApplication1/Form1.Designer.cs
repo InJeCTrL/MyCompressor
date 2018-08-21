@@ -36,6 +36,7 @@
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // button1
@@ -51,7 +52,7 @@
             // button2
             // 
             this.button2.Enabled = false;
-            this.button2.Location = new System.Drawing.Point(392, 146);
+            this.button2.Location = new System.Drawing.Point(392, 144);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(117, 30);
             this.button2.TabIndex = 3;
@@ -82,11 +83,11 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(376, 32);
+            this.label2.Location = new System.Drawing.Point(390, 32);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(149, 24);
+            this.label2.Size = new System.Drawing.Size(113, 24);
             this.label2.TabIndex = 6;
-            this.label2.Text = "文件拖拽至左侧第一个控件\r\n双击项删除";
+            this.label2.Text = "文件拖拽至左侧控件\r\n双击项删除";
             // 
             // listView1
             // 
@@ -118,6 +119,14 @@
             this.columnHeader2.Text = "状态";
             this.columnHeader2.Width = 88;
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(392, 77);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(117, 27);
+            this.progressBar1.TabIndex = 8;
+            this.progressBar1.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -129,6 +138,7 @@
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
+            this.Controls.Add(this.progressBar1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Form1";
@@ -148,6 +158,7 @@
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
 
