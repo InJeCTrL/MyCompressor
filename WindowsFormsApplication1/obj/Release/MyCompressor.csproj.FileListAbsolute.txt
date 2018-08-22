@@ -1,8 +1,8 @@
-D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\bin\Release\WindowsFormsApplication1.exe.config
-D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\bin\Release\WindowsFormsApplication1.exe
-D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\bin\Release\WindowsFormsApplication1.pdb
 D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\obj\Release\MyCompressor.Form1.resources
 D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\obj\Release\MyCompressor.Properties.Resources.resources
 D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\obj\Release\MyCompressor.csproj.GenerateResource.Cache
-D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\obj\Release\WindowsFormsApplication1.exe
-D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\obj\Release\WindowsFormsApplication1.pdb
+D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\bin\Release\MyCompressor.exe.config
+D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\bin\Release\MyCompressor.exe
+D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\bin\Release\MyCompressor.pdb
+D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\obj\Release\MyCompressor.exe
+D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\obj\Release\MyCompressor.pdb

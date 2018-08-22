@@ -22,9 +22,10 @@ namespace MyCompressor
         private static extern int NtSuspendProcess([In] IntPtr processHandle);
 
         Process proc;//新建的ffmpeg进程
-        Thread th;//用于创建并监视proc的线程
+        Thread TaskQueue;//用于创建并监视proc的线程
         string OutputFolder;//指定输出文件夹
         int tDuration;//临时存储视频时长
+
         public Form1()
         {
             InitializeComponent();
@@ -45,12 +46,15 @@ namespace MyCompressor
             switch (trackBar1.Value)
             {/*根据trackBar获取优先级设置信息*/
                 case 0:
+                    Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Normal;
                     proc.PriorityClass = ProcessPriorityClass.Normal;//设置FFmpeg进程为标准
                     break;
                 case 1:
+                    Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
                     proc.PriorityClass = ProcessPriorityClass.High;//设置FFmpeg进程为高
                     break;
                 case 2:
+                    Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.RealTime;
                     proc.PriorityClass = ProcessPriorityClass.RealTime;//设置FFmpeg进程为实时
                     break;
             }
@@ -77,9 +81,9 @@ namespace MyCompressor
                 proc.StartInfo.UseShellExecute = false;//不使用shell启动
                 proc.StartInfo.CreateNoWindow = true;//静默无窗体显示
                 proc.StartInfo.RedirectStandardError = true;//重定向标准错误输出流
-                proc.StartInfo.Arguments = "-i " + path + //输入path
+                proc.StartInfo.Arguments = " -i " + path + //输入path
                                            " -vcodec h264 -s 480*360 -b:v 384k " + //视频部分转换为h264 x360 动态码率 平均384k
-                                           OutputFolder + "/" + Path.GetFileName(path);//输出为输出文件夹下同名文件
+                                           OutputFolder + "\\" + Path.GetFileName(path);//输出为输出文件夹下同名文件
                 proc.ErrorDataReceived += new DataReceivedEventHandler(FFmpeg_Output);//输出流附加到FFmpeg_Output上
                 proc.Start();//启动ffmpeg进程，开始转换
                 SetPriorityByTrackBar();//设置FFmpeg进程优先值
@@ -90,9 +94,12 @@ namespace MyCompressor
                 listView1.Items[i].SubItems[1].Text = "Complete";//标记本条转换状态为结束
                 listView1.Items[i].BackColor = Color.LawnGreen;
             }
-            proc.Close();//关闭进程
-            proc.Dispose();//清理进程
-            proc = null;
+            if (proc != null)//当且仅当进程被创建过才关闭并清理进程，避免异常
+            {
+                proc.Close();//关闭进程
+                proc.Dispose();//清理进程
+                proc = null;
+            }
             Wnd_AllEnd();//转换正常结束，各项控件重设
         }
         private int GetDuration(string Line)
@@ -129,10 +136,10 @@ namespace MyCompressor
             button2.Enabled = true;
             button2.Text = "暂停";
             button3.Enabled = true;//暂停与停止按钮有效并重设暂停按钮
-            th = new Thread(ComPressor);
-            th.IsBackground = true;//创建后台线程
-            th.Priority = ThreadPriority.Highest;//监听线程最高优先级
-            th.Start();//启动线程
+            TaskQueue = new Thread(ComPressor);
+            TaskQueue.IsBackground = true;//创建后台线程
+            TaskQueue.Priority = ThreadPriority.Highest;//监听线程最高优先级
+            TaskQueue.Start();//启动线程
         }
         private void button2_Click(object sender, EventArgs e)
         {/*按下暂停按钮，通过该按钮的Text标记当前状态*/
@@ -161,7 +168,7 @@ namespace MyCompressor
         }
         private void button3_Click(object sender, EventArgs e)
         {/*按下停止按钮*/
-            th.Abort();//终止监听线程
+            TaskQueue.Abort();//终止监听线程
             proc.Kill();//结束FFmpeg进程
             proc.Dispose();//清理FFmpeg进程
             proc = null;
