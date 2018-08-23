@@ -69,7 +69,7 @@ namespace MyCompressor
                 {//检测输出文件夹下是否已存在同名文件，若存在则询问覆盖或跳过
                     if (DialogResult.No == MessageBox.Show(null, "文件已经存在于输出文件夹中\n是：覆盖生成，否：跳过此文件", "文件重复", MessageBoxButtons.YesNo))
                     {//用户选择跳过，标记为complete并执行下一条压缩
-                        listView1.Items[i].SubItems[1].Text = "Complete";
+                        listView1.Items[i].SubItems[1].Text = "0:0:0";
                         listView1.Items[i].BackColor = Color.LawnGreen;
                         continue;
                     }
@@ -85,13 +85,17 @@ namespace MyCompressor
                                            " -vcodec h264 -s 480*360 -b:v 384k " + //视频部分转换为h264 x360 动态码率 平均384k
                                            OutputFolder + "\\" + Path.GetFileName(path);//输出为输出文件夹下同名文件
                 proc.ErrorDataReceived += new DataReceivedEventHandler(FFmpeg_Output);//输出流附加到FFmpeg_Output上
+                DateTime BeginTime = DateTime.Now;//记录开始时间
                 proc.Start();//启动ffmpeg进程，开始转换
                 SetPriorityByTrackBar();//设置FFmpeg进程优先值
                 listView1.Items[i].SubItems[1].Text = "Compressing";//并标记本条状态为压缩中
                 listView1.Items[i].BackColor = Color.Gold;
                 proc.BeginErrorReadLine();//开始读取错误输出流
                 proc.WaitForExit();//等待ffmpeg进程退出
-                listView1.Items[i].SubItems[1].Text = "Complete";//标记本条转换状态为结束
+                TimeSpan TransTime = DateTime.Now - BeginTime;//计算时间长
+                listView1.Items[i].SubItems[1].Text = TransTime.Hours.ToString() + ":" +
+                                                      TransTime.Minutes.ToString() + ":" +
+                                                      TransTime.Seconds.ToString();//标记本条转换状态为结束
                 listView1.Items[i].BackColor = Color.LawnGreen;
             }
             if (proc != null)//当且仅当进程被创建过才关闭并清理进程，避免异常
