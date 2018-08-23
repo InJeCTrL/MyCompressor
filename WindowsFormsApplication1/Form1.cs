@@ -81,12 +81,12 @@ namespace MyCompressor
                 proc.StartInfo.UseShellExecute = false;//不使用shell启动
                 proc.StartInfo.CreateNoWindow = true;//静默无窗体显示
                 proc.StartInfo.RedirectStandardError = true;//重定向标准错误输出流
-                proc.StartInfo.Arguments = " -i " + path + //输入path
+                proc.StartInfo.Arguments = "-i \"" + path + "\"" + //输入path，并加引号防止异常
                                            " -vcodec h264 -s 480*360 -b:v 384k " + //视频部分转换为h264 x360 动态码率 平均384k
-                                           OutputFolder + "\\" + Path.GetFileName(path);//输出为输出文件夹下同名文件
+                                           "\"" + OutputFolder + "\\" + Path.GetFileName(path) + "\"";//输出到指定的输出文件夹，并加引号防止异常
                 proc.ErrorDataReceived += new DataReceivedEventHandler(FFmpeg_Output);//输出流附加到FFmpeg_Output上
-                DateTime BeginTime = DateTime.Now;//记录开始时间
                 proc.Start();//启动ffmpeg进程，开始转换
+                DateTime BeginTime = DateTime.Now;//记录开始时间
                 SetPriorityByTrackBar();//设置FFmpeg进程优先值
                 listView1.Items[i].SubItems[1].Text = "Compressing";//并标记本条状态为压缩中
                 listView1.Items[i].BackColor = Color.Gold;
@@ -126,10 +126,10 @@ namespace MyCompressor
         {/*处理ffmpeg重定向过程*/
             if (e != null && e.Data != null)
             {
-                if (e.Data.Contains("Duration"))//若某行包含Duration字样代表该行记录时长
-                    tDuration = GetDuration(e.Data);
-                else if (e.Data.Contains("time="))//若某行包含time=字样代表该行为转换输出行
+                if (e.Data.Contains("time="))//若某行包含time=字样代表该行为转换输出行
                     progressBar1.Value = GetNowStatus(e.Data) * 100 / tDuration;//计算转换进度并更新进度条
+                else if (e.Data.Contains("Duration"))//若某行包含Duration字样代表该行记录时长
+                    tDuration = GetDuration(e.Data);
             }
         }
         private void button1_Click(object sender, EventArgs e)
