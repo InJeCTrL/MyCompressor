@@ -25,6 +25,7 @@ namespace MyCompressor
         Thread TaskQueue;//用于创建并监视proc的线程
         string OutputFolder;//指定输出文件夹
         int tDuration;//临时存储视频时长
+        int ActiveItem;//标记当前正在处理的项目下标
 
         public Form1()
         {
@@ -34,15 +35,15 @@ namespace MyCompressor
         private void Wnd_AllEnd()
         {/*转换全部终止后对窗体中各控件的操作*/
             this.Text = "MyCompressor";
-            button1.Enabled = true;
-            button1.Visible = true;
-            progressBar1.Visible = false;
-            button2.Enabled = false;
-            button2.Text = "暂停";
-            button3.Enabled = false;
+            button1.Enabled = true;//禁用开始按钮
+            button1.Visible = true;//隐藏开始按钮
+            progressBar1.Visible = false;//显示进度条
+            button2.Enabled = false;//启用暂停按钮
+            button2.Text = "暂停";//暂停按钮复位
+            button3.Enabled = false;//启用停止按钮
         }
         private void SetPriorityByTrackBar()
-        {/*根据TrackBar的值设置FFmpeg进程优先级*/
+        {/*根据TrackBar的值设置FFmpeg进程与重定向处理线程的优先级*/
             switch (trackBar1.Value)
             {/*根据trackBar获取优先级设置信息*/
                 case 0:
@@ -61,16 +62,16 @@ namespace MyCompressor
         }
         private void ComPressor()
         {/*创建ffmpeg进程并监视*/
-            for (int i = 0; i < listView1.Items.Count; i++)
+            for (ActiveItem = 0; ActiveItem < listView1.Items.Count; ActiveItem++)
             {//列表从上之下进行压缩
-                string path = listView1.Items[i].SubItems[0].Text;//临时存储预压缩的文件路径
-                this.Text = i + " / " + listView1.Items.Count;//设置标题栏标记总进度
+                string path = listView1.Items[ActiveItem].SubItems[0].Text;//临时存储预压缩的文件路径
+                this.Text = ActiveItem + " / " + listView1.Items.Count;//设置标题栏标记总进度
                 if (File.Exists(OutputFolder + "/" + Path.GetFileName(path)))//目标文件已存在
                 {//检测输出文件夹下是否已存在同名文件，若存在则询问覆盖或跳过
                     if (DialogResult.No == MessageBox.Show(null, "文件已经存在于输出文件夹中\n是：覆盖生成，否：跳过此文件", "文件重复", MessageBoxButtons.YesNo))
-                    {//用户选择跳过，标记为complete并执行下一条压缩
-                        listView1.Items[i].SubItems[1].Text = "0:0:0";
-                        listView1.Items[i].BackColor = Color.LawnGreen;
+                    {//用户选择跳过，标记为0:0:0并执行下一条压缩
+                        listView1.Items[ActiveItem].SubItems[1].Text = "0:0:0";
+                        listView1.Items[ActiveItem].BackColor = Color.LawnGreen;
                         continue;
                     }
                     else//用户选择覆盖，删除原有同名文件
@@ -82,21 +83,20 @@ namespace MyCompressor
                 proc.StartInfo.CreateNoWindow = true;//静默无窗体显示
                 proc.StartInfo.RedirectStandardError = true;//重定向标准错误输出流
                 proc.StartInfo.Arguments = "-i \"" + path + "\"" + //输入path，并加引号防止异常
-                                           " -vcodec h264 -s 480*360 -b:v 384k " + //视频部分转换为h264 x360 动态码率 平均384k
+                                           " -vcodec libx264 -s 480*360 -b:v 384k " + //视频部分转换为h264 x360 动态码率 平均384k
                                            "\"" + OutputFolder + "\\" + Path.GetFileName(path) + "\"";//输出到指定的输出文件夹，并加引号防止异常
                 proc.ErrorDataReceived += new DataReceivedEventHandler(FFmpeg_Output);//输出流附加到FFmpeg_Output上
                 proc.Start();//启动ffmpeg进程，开始转换
                 DateTime BeginTime = DateTime.Now;//记录开始时间
                 SetPriorityByTrackBar();//设置FFmpeg进程优先值
-                listView1.Items[i].SubItems[1].Text = "Compressing";//并标记本条状态为压缩中
-                listView1.Items[i].BackColor = Color.Gold;
+                listView1.Items[ActiveItem].BackColor = Color.Gold;//并标记本条颜色为金黄色，表明处于压缩状态
                 proc.BeginErrorReadLine();//开始读取错误输出流
                 proc.WaitForExit();//等待ffmpeg进程退出
                 TimeSpan TransTime = DateTime.Now - BeginTime;//计算时间长
-                listView1.Items[i].SubItems[1].Text = TransTime.Hours.ToString() + ":" +
+                listView1.Items[ActiveItem].SubItems[1].Text = TransTime.Hours.ToString() + ":" +
                                                       TransTime.Minutes.ToString() + ":" +
                                                       TransTime.Seconds.ToString();//标记本条转换状态为结束
-                listView1.Items[i].BackColor = Color.LawnGreen;
+                listView1.Items[ActiveItem].BackColor = Color.LawnGreen;
             }
             if (proc != null)//当且仅当进程被创建过才关闭并清理进程，避免异常
             {
@@ -126,8 +126,13 @@ namespace MyCompressor
         {/*处理ffmpeg重定向过程*/
             if (e != null && e.Data != null)
             {
+                double tVal;//记录临时计算的进度
                 if (e.Data.Contains("time="))//若某行包含time=字样代表该行为转换输出行
-                    progressBar1.Value = GetNowStatus(e.Data) * 100 / tDuration;//计算转换进度并更新进度条
+                {
+                    tVal = GetNowStatus(e.Data) * 100.0 / tDuration;//计算百分比
+                    listView1.Items[ActiveItem].SubItems[1].Text = tVal.ToString("f1") + " %";//列表中状态列显示百分比
+                    progressBar1.Value = (int)tVal;//计算转换进度并更新进度条
+                }
                 else if (e.Data.Contains("Duration"))//若某行包含Duration字样代表该行记录时长
                     tDuration = GetDuration(e.Data);
             }
@@ -150,23 +155,14 @@ namespace MyCompressor
             if (button2.Text.Equals("暂停"))
             {//若当前是转换状态
                 NtSuspendProcess(proc.Handle);//挂起FFmpeg进程
-                for (int i = 0; i < listView1.Items.Count; i++)//将列表中状态为转换的修改为暂停
-                    if (listView1.Items[i].SubItems[1].Text.Equals("Compressing"))
-                    {
-                        listView1.Items[i].SubItems[1].Text = "Pause";
-                        listView1.Items[i].BackColor = Color.Red;
-                    }
+                listView1.Items[ActiveItem].SubItems[1].Text = "Pause";
+                listView1.Items[ActiveItem].BackColor = Color.Red;//在列表中标记当前活动的项目为暂停
                 button2.Text = "继续";//更新按钮标记
             }
             else
             {//若当前是暂停状态
                 NtResumeProcess(proc.Handle);//恢复FFmpeg进程
-                for (int i = 0; i < listView1.Items.Count; i++)//将列表中状态为暂停的修改为转换
-                    if (listView1.Items[i].SubItems[1].Text.Equals("Pause"))
-                    {
-                        listView1.Items[i].SubItems[1].Text = "Compressing";
-                        listView1.Items[i].BackColor = Color.Gold;
-                    }
+                listView1.Items[ActiveItem].BackColor = Color.Gold;
                 button2.Text = "暂停";//更新按钮标记
             }
         }
@@ -177,13 +173,8 @@ namespace MyCompressor
             proc.Dispose();//清理FFmpeg进程
             proc = null;
             Wnd_AllEnd();//窗体各控件重设
-            for (int i = 0; i < listView1.Items.Count; i++)//将列表中状态为转换与暂停的设为Ready
-                if (listView1.Items[i].SubItems[1].Text.Equals("Compressing") ||
-                    listView1.Items[i].SubItems[1].Text.Equals("Pause"))
-                {
-                    listView1.Items[i].SubItems[1].Text = "Ready";
-                    listView1.Items[i].BackColor = Color.Red;
-                }
+            listView1.Items[ActiveItem].SubItems[1].Text = "Ready";
+            listView1.Items[ActiveItem].BackColor = Color.Red;//在列表中标记当前活动的项目为预备
         }
         private void listView1_DragDrop(object sender, DragEventArgs e)
         {/*列表拖拽松开事件*/
