@@ -47,16 +47,13 @@ namespace MyCompressor
             switch (trackBar1.Value)
             {/*根据trackBar获取优先级设置信息*/
                 case 0:
-                    Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Normal;
-                    proc.PriorityClass = ProcessPriorityClass.Normal;//设置FFmpeg进程为标准
+                    proc.PriorityClass = ProcessPriorityClass.Idle;//设置FFmpeg进程优先级为低
                     break;
                 case 1:
-                    Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
-                    proc.PriorityClass = ProcessPriorityClass.High;//设置FFmpeg进程为高
+                    proc.PriorityClass = ProcessPriorityClass.Normal;//设置FFmpeg进程优先级为标准
                     break;
                 case 2:
-                    Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.RealTime;
-                    proc.PriorityClass = ProcessPriorityClass.RealTime;//设置FFmpeg进程为实时
+                    proc.PriorityClass = ProcessPriorityClass.High;//设置FFmpeg进程优先级为高
                     break;
             }
         }
@@ -230,6 +227,10 @@ namespace MyCompressor
                 this.Close();
                 this.Dispose();
             }
+        }
+        private void label7_Click(object sender, EventArgs e)
+        {/*优先级帮助按钮单击事件*/
+            MessageBox.Show(null,"一般情况下，高级别优先级不能使转码过程加速。\n当其它程序占用率较高时，可以调高优先级以保证转码优先，或是调低优先级为其它任务让出时间。","关于优先级设置");
         }
     }
 }
