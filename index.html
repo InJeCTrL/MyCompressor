@@ -10,14 +10,24 @@
 		<p>项目主页：<a href="https://git.coding.net/InJeCTrL/MyCompressor.git">git.coding.net/InJeCTrL/MyCompressor.git</a></p>
 		<hr color="#0000FF" size="4" align="left" width="260" />
 		<p align="center">
-			<img src="http://injectrl.coding.me/MyCompressor/Page/Show.png"/>
+			<table>
+				<tr>
+					<td>
+						<img src="http://injectrl.coding.me/MyCompressor/Page/Show_1.png" />
+					</td>
+					<td>
+						<img src="http://injectrl.coding.me/MyCompressor/Page/Show_2.png" />
+					</td>
+				</tr>
+			</table>
 			<br />
-			拖拽文件至列表，单击开始即可。
+			拖拽文件至列表，右键可选删除或剪辑。
 			<br />
-			开始后显示单项转换任务进度，支持暂停、停止任务。
+			列表显示文件名、任务、状态、进度。
 			<br />
-			支持优先级调节。
+			支持优先级调节，可重新选择输出文件夹。
 		</p>
+		<hr color="#0000FF" size="4" align="left" width="260" />
 		<table align="center">
 			<tbody align="center">
 				<tr>
@@ -34,14 +44,15 @@
 					</td>
 				</tr>
 				<tr>
-					<td>外壳程序版本: 1.0.1</td>
+					<td>外壳程序版本: 1.0.2</td>
 					<td>(仅提供20180816版FFmpeg，如需更新版本请前往<a href="http://ffmpeg.org/">FFmpeg官网</a>)</td>
 				<tr />
 				<tr>
 					<td colspan="2">
+						<br />
 						MyCompressor只是一款调用FFmpeg的外壳程序，采用C#编写，基于.NET 4.5。
 						<br />
-						<b>使用时请将FFmpeg与MyCompressor放置在同一目录下！<b />
+						<b>使用时请将FFmpeg与MyCompressor.rar中的所有文件放置在同一目录下！<b />
 					</td>
 				</tr>
 			</tbody>
@@ -50,6 +61,15 @@
 					<td colspan="2">
 						更新日志：
 						<ul>
+							<li>2018.08.26</li>
+							<ol>
+								<li>新增视频剪辑功能</li>
+								<li>细化列表显示</li>
+								<li>新增右键菜单/li>
+								<li>支持重新定义输出文件夹</li>
+								<li>修复转换结束后再次转换引发的异常</li>
+								<li>大规模重写代码</li>
+							</ol>
 							<li>2018.08.24</li>
 							<ol>
 								<li>修改优先级规则并添加提示</li>

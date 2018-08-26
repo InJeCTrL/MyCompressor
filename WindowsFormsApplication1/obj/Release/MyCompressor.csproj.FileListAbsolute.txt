@@ -6,3 +6,9 @@ D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\bin\Release\MyCompres
 D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\bin\Release\MyCompressor.pdb
 D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\obj\Release\MyCompressor.exe
 D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\obj\Release\MyCompressor.pdb
+D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\obj\Release\Interop.WMPLib.dll
+D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\obj\Release\AxInterop.WMPLib.dll
+D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\obj\Release\MyCompressor.csproj.ResolveComReference.cache
+D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\bin\Release\Interop.WMPLib.dll
+D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\bin\Release\AxInterop.WMPLib.dll
+D:\Code Trunk\CSharp\MyCompressor\WindowsFormsApplication1\obj\Release\MyCompressor.Form2.resources
