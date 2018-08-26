@@ -29,8 +29,22 @@ namespace MyCompressor
                 VideoInf.DeleteVideo(listView1.FocusedItem.Index);//删除视频记录
             else//选择剪辑
             {
-                Form2 frm2 = new Form2();//初始化剪辑窗口
-                frm2.ShowDialog();//模态启动剪辑窗口
+                switch (CheckEditFileExists())
+                {
+                    case 1:
+                        MessageBox.Show(null, "缺少AxInterop，您将无法使用剪辑功能！\n请将\"AxInterop.WMPLib.dll\"与本程序置于同一目录下。", "文件缺失");
+                        break;
+                    case 2:
+                        MessageBox.Show(null, "缺少Interop，您将无法使用剪辑功能！\n请将\"Interop.WMPLib.dll\"与本程序置于同一目录下。", "文件缺失");
+                        break;
+                    case 3:
+                        MessageBox.Show(null, "缺少AxInterop与Interop，您将无法使用剪辑功能！\n请将\"AxInterop.WMPLib.dll\"与\"Interop.WMPLib.dll\"与本程序置于同一目录下。", "文件缺失");
+                        break;
+                    default:
+                        Form2 frm2 = new Form2();//初始化剪辑窗口
+                        frm2.ShowDialog();//模态启动剪辑窗口
+                        break;
+                }
             }
         }
         /// <summary> 优先级trackBar变动
@@ -111,12 +125,38 @@ namespace MyCompressor
         {
             SetOutputFolder();
         }
-        /// <summary> 主窗体加载时保存输出文件夹路径，并初始化视频转码类的视频信息
+        /// <summary> 检查本程序目录下是否存在剪辑必须文件
+        /// </summary>
+        /// <returns>返回检查值 0：文件完整 1：只缺少AxInterop 2：只缺少Interop</returns>
+        private int CheckEditFileExists()
+        {
+            int ret = 0;
+            if (!File.Exists(Environment.CurrentDirectory + "/AxInterop.WMPLib.dll"))//AxInterop不存在
+                ret++;
+            if (!File.Exists(Environment.CurrentDirectory + "/Interop.WMPLib.dll"))//Interop不存在
+                ret += 2;
+            return ret;
+        }
+        /// <summary> 检查本程序目录下是否存在FFmpeg
+        /// </summary>
+        /// <returns></returns>
+        private Boolean CheckFFmpegExists()
+        {
+            if (!File.Exists(Environment.CurrentDirectory + "/ffmpeg.exe"))//FFmpeg不存在
+                return false;
+            return true;
+        }
+        /// <summary> 主窗体加载时检测必须文件是否存在，保存输出文件夹路径，并初始化视频转码类的视频信息
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Form1_Load(object sender, EventArgs e)
         {
+            if (!CheckFFmpegExists())
+            {//检查无FFmpeg存在
+                MessageBox.Show(null, "缺少FFmpeg！\n若您更新过FFmpeg，请将FFmpeg主程序重命名为\"ffmpeg.exe\"与本程序置于同一目录下。", "文件缺失");
+                Application.Exit();
+            }
             if (SetOutputFolder() == 1)
             {
                 MessageBox.Show(null, "用户未指定输出位置，自动退出！", "输出文件夹无效");
