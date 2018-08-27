@@ -98,7 +98,7 @@
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(102, 32);
             this.button4.TabIndex = 6;
-            this.button4.Text = "取消剪辑";
+            this.button4.Text = "不做修改";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
@@ -117,6 +117,7 @@
             this.Controls.Add(this.axWindowsMediaPlayer1);
             this.Name = "Form2";
             this.Text = "保留区间选择";
+            this.Load += new System.EventHandler(this.Form2_Load);
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

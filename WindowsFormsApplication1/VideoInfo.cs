@@ -31,6 +31,9 @@ namespace MyCompressor
         /// <summary> 二部分参数，输出文件名
         /// </summary>
         List<String> Arguments_part2 = new List<string>();
+        /// <summary> 时间区间参数，若视频需剪辑，拼接到一部分参数前
+        /// </summary>
+        List<String> TimeLimit = new List<string>();
         /// <summary> 标识是否剪辑
         /// </summary>
         List<Boolean> EditFlag = new List<Boolean>();
@@ -52,6 +55,7 @@ namespace MyCompressor
                                 "-s 480*360 " + //分辨率
                                 "-b:v 384k \"");//码率
             Arguments_part2.Add("\\" + FileName.ElementAt(VideoNum) + "\"");//输出文件名
+            TimeLimit.Add(null);//时间区间参数默认空
             EditFlag.Add(false);//默认标记不进行剪辑
             tBegin.Add(0.0);//默认0
             tEnd.Add(0.0);//默认0
@@ -68,19 +72,23 @@ namespace MyCompressor
             FileName.RemoveAt(index);
             Arguments_part1.RemoveAt(index);
             Arguments_part2.RemoveAt(index);
+            TimeLimit.RemoveAt(index);
             EditFlag.RemoveAt(index);
             tBegin.RemoveAt(index);
             tEnd.RemoveAt(index);
             Form1.frm1.listView1.Items.RemoveAt(index);
             VideoNum--;
         }
-        /// <summary>获取第一部分参数实现限制用于拼接
+        /// <summary>获取(时间区间参数+)第一部分参数实现限制用于拼接
         /// </summary>
         /// <param name="index">视频索引值</param>
         /// <returns></returns>
         public String GetAPartArg(int index)
         {
-            return Arguments_part1.ElementAt(index);
+            if (EditFlag.ElementAt(index) == true)//视频有经过剪辑，需拼接区间参数与一部分参数
+                return TimeLimit.ElementAt(index) + Arguments_part1.ElementAt(index);
+            else//视频未经剪辑
+                return Arguments_part1.ElementAt(index);
         }
         /// <summary> 获取最后部分参数用于拼接
         /// </summary>
@@ -158,7 +166,7 @@ namespace MyCompressor
         {
             return (int)tEnd.ElementAt(index);
         }
-        /// <summary> 在一部分参数后追加时间区间，并同步到listView
+        /// <summary> 标记本条视频剪辑时长，并同步到listView
         /// </summary>
         /// <param name="_tBegin">剪辑起点</param>
         /// <param name="_tEnd">剪辑终点</param>
@@ -170,9 +178,17 @@ namespace MyCompressor
             EditFlag[index] = true;//确认剪辑
             String str_tBegin = GetBeginTime_str(index);//浮点时间转字符串
             String str_tEnd = GetEndTime_str(index);//浮点时间转字符串
-            String TimeLimit = "-ss " + str_tBegin + " -to " + str_tEnd + " ";
-            Arguments_part1[index] = TimeLimit + Arguments_part1[index];//追加区间
+            String TimeLimit_str = "-ss " + str_tBegin + " -to " + str_tEnd + " ";
+            TimeLimit[index] = TimeLimit_str;//修改时间区间
             Form1.frm1.listView1.Items[index].SubItems[1].Text = "转码&剪辑";
+        }
+        /// <summary> 标记视频无需剪辑，并同步到listView
+        /// </summary>
+        /// <param name="index">视频索引值</param>
+        public void DisableTimeLimit(int index)
+        {
+            EditFlag[index] = false;//视频剪辑标志失效
+            Form1.frm1.listView1.Items[index].SubItems[1].Text = "转码";//更新listView标记
         }
         /// <summary> 获取视频是否经过剪辑
         /// </summary>

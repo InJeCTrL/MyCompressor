@@ -48,6 +48,7 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.删除ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.剪辑ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.取消剪辑ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.button7 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.button8 = new System.Windows.Forms.Button();
@@ -215,22 +216,31 @@
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.删除ToolStripMenuItem,
-            this.剪辑ToolStripMenuItem});
+            this.剪辑ToolStripMenuItem,
+            this.取消剪辑ToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(101, 48);
-            this.contextMenuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.contextMenuStrip1_ItemClicked);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(125, 70);
             // 
             // 删除ToolStripMenuItem
             // 
             this.删除ToolStripMenuItem.Name = "删除ToolStripMenuItem";
-            this.删除ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.删除ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.删除ToolStripMenuItem.Text = "删除";
+            this.删除ToolStripMenuItem.Click += new System.EventHandler(this.删除ToolStripMenuItem_Click);
             // 
             // 剪辑ToolStripMenuItem
             // 
             this.剪辑ToolStripMenuItem.Name = "剪辑ToolStripMenuItem";
-            this.剪辑ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.剪辑ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.剪辑ToolStripMenuItem.Text = "剪辑";
+            this.剪辑ToolStripMenuItem.Click += new System.EventHandler(this.剪辑ToolStripMenuItem_Click);
+            // 
+            // 取消剪辑ToolStripMenuItem
+            // 
+            this.取消剪辑ToolStripMenuItem.Name = "取消剪辑ToolStripMenuItem";
+            this.取消剪辑ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.取消剪辑ToolStripMenuItem.Text = "取消剪辑";
+            this.取消剪辑ToolStripMenuItem.Click += new System.EventHandler(this.取消剪辑ToolStripMenuItem_Click);
             // 
             // button7
             // 
@@ -330,6 +340,7 @@
         public System.Windows.Forms.Button button1;
         public System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.ToolStripMenuItem 取消剪辑ToolStripMenuItem;
     }
 }
 

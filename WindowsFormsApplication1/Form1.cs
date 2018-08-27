@@ -19,34 +19,6 @@ namespace MyCompressor
             frm1 = this;
             CheckForIllegalCrossThreadCalls = false;//取消线程安全
         }
-        /// <summary> ListView右键列表 删除、剪辑事件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void contextMenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-            if (e.ClickedItem == contextMenuStrip1.Items[0])//选择删除
-                VideoInf.DeleteVideo(listView1.FocusedItem.Index);//删除视频记录
-            else//选择剪辑
-            {
-                switch (CheckEditFileExists())
-                {
-                    case 1:
-                        MessageBox.Show(null, "缺少AxInterop，您将无法使用剪辑功能！\n请将\"AxInterop.WMPLib.dll\"与本程序置于同一目录下。", "文件缺失");
-                        break;
-                    case 2:
-                        MessageBox.Show(null, "缺少Interop，您将无法使用剪辑功能！\n请将\"Interop.WMPLib.dll\"与本程序置于同一目录下。", "文件缺失");
-                        break;
-                    case 3:
-                        MessageBox.Show(null, "缺少AxInterop与Interop，您将无法使用剪辑功能！\n请将\"AxInterop.WMPLib.dll\"与\"Interop.WMPLib.dll\"与本程序置于同一目录下。", "文件缺失");
-                        break;
-                    default:
-                        Form2 frm2 = new Form2();//初始化剪辑窗口
-                        frm2.ShowDialog();//模态启动剪辑窗口
-                        break;
-                }
-            }
-        }
         /// <summary> 优先级trackBar变动
         /// </summary>
         /// <param name="sender"></param>
@@ -64,7 +36,13 @@ namespace MyCompressor
             if (e.Button == System.Windows.Forms.MouseButtons.Right && //列表项右键时触发
                 button1.Enabled == true && //当且仅当准备状态有效
                 listView1.SelectedItems.Count == 1)//选定了一个列表项
+            {
+                if (VideoInf.GetEditFlag(listView1.FocusedItem.Index))//选中条经过剪辑，可取消剪辑
+                    取消剪辑ToolStripMenuItem.Enabled = true;
+                else//选中条未经编辑，不可取消剪辑
+                    取消剪辑ToolStripMenuItem.Enabled = false;
                 contextMenuStrip1.Show(listView1, e.Location);//相对于列表弹出右键菜单
+            }
         }
         /// <summary> 显示优先级帮助
         /// </summary>
@@ -243,6 +221,45 @@ namespace MyCompressor
         private void button7_Click(object sender, EventArgs e)
         {
             VideoInf.Clear();
+        }
+        /// <summary> ListView右键删除操作
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void 删除ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            VideoInf.DeleteVideo(listView1.FocusedItem.Index);//删除视频记录
+        }
+        /// <summary> ListView右键剪辑操作
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void 剪辑ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            switch (CheckEditFileExists())//判断MediaPlayer必须文件
+            {
+                case 1:
+                    MessageBox.Show(null, "缺少AxInterop，您将无法使用剪辑功能！\n请将\"AxInterop.WMPLib.dll\"与本程序置于同一目录下。", "文件缺失");
+                    break;
+                case 2:
+                    MessageBox.Show(null, "缺少Interop，您将无法使用剪辑功能！\n请将\"Interop.WMPLib.dll\"与本程序置于同一目录下。", "文件缺失");
+                    break;
+                case 3:
+                    MessageBox.Show(null, "缺少AxInterop与Interop，您将无法使用剪辑功能！\n请将\"AxInterop.WMPLib.dll\"与\"Interop.WMPLib.dll\"与本程序置于同一目录下。", "文件缺失");
+                    break;
+                default:
+                    Form2 frm2 = new Form2(listView1.FocusedItem.Index);//初始化剪辑窗口，并传入当前列表中选中项下标
+                    frm2.ShowDialog();//模态启动剪辑窗口
+                    break;
+            }
+        }
+        /// <summary> ListView右键取消剪辑操作
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void 取消剪辑ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            VideoInf.DisableTimeLimit(listView1.FocusedItem.Index);//取消剪辑操作
         }
     }
 }

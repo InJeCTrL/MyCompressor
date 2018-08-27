@@ -13,11 +13,13 @@ namespace MyCompressor
 {
     public partial class Form2 : Form
     {
+        int index;//Form1.listView1中选中项下标
         double tBegin, tEnd;//截取的起止时间
-        public Form2()
+        public Form2(int _index)
         {
             InitializeComponent();
-            axWindowsMediaPlayer1.URL = Form1.frm1.VideoInf.GetFilePath(Form1.frm1.listView1.FocusedItem.Index);//加载选中视频
+            index = _index;
+            axWindowsMediaPlayer1.URL = Form1.frm1.VideoInf.GetFilePath(index);//加载选中视频
         }
         /// <summary> 检查各截取时间是否合法
         /// </summary>
@@ -124,6 +126,18 @@ namespace MyCompressor
         private void button4_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+        /// <summary> 区间选择窗体显示时自动判断剪辑标志并填充起止时间textbox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Form2_Load(object sender, EventArgs e)
+        {
+            if (Form1.frm1.VideoInf.GetEditFlag(index))//若视频剪辑过，自动填充起止时间
+            {
+                textBox1.Text = Form1.frm1.VideoInf.GetBeginTime_str(index);//填充起始时间
+                textBox2.Text = Form1.frm1.VideoInf.GetEndTime_str(index);//填充结束时间
+            }
         }
     }
 }
